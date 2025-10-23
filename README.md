@@ -11,9 +11,11 @@
 
 A powerful, single-file AI chat interface designed specifically for Splunk Sales Engineers and Solution Architects. Features real-time streaming responses, markdown support, and a beautiful dark-themed UI.
 </div>
+
 ---
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 ![Splunky Chat Example][](./images/screenshot1.png)
