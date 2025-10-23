@@ -11,16 +11,11 @@
 
 A powerful, single-file AI chat interface designed specifically for Splunk Sales Engineers and Solution Architects. Features real-time streaming responses, markdown support, and a beautiful dark-themed UI.
 </div>
-
-
-
-
 ---
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Splunky Chat Example][Splunky Chat Example]](images/screenshot1.png)
+[![Splunky Chat Example][]](./images/screenshot1.png)
 
 After 10 years of being a SE and now SA, I found it difficult to account for every customer situation and spending a lot of time researching the customer's organization, customer's profile in LinkedIn and working with various Sales Reps...
 
@@ -30,10 +25,6 @@ A single HTML file combines ![HTML5](https://img.shields.io/badge/HTML5-E34F26?l
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) to make the installation and deployment super easy!
 
-
-
-
-
 ### Built With
 
 | Frontend | Backend | Hardware |
@@ -41,9 +32,6 @@ A single HTML file combines ![HTML5](https://img.shields.io/badge/HTML5-E34F26?l
 | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) | LM Studio | Ryzen 7 9700X |
 | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white) | gpt-oss-120b | 64GB DDR5 6000MT |
 | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) | | 3x 3090s (72GB VRAM Total) |
-
-
-
 
 ---
 
@@ -78,8 +66,8 @@ From Git:
    ```sh
    git clone https://github.com/pmjeffery/lmstudio-webui.git
    ```
-2. Open the HTML file in your web browser
 
+2. Open the HTML file in your web browser
 
 Manual:
 
@@ -93,7 +81,6 @@ or
 
 <!-- USAGE EXAMPLES -->
 # Usage
-
 
 ## 💡 Pro Tips for Best Results
 
@@ -111,6 +98,7 @@ Include details like:
 - Competitor evaluations in play
 
 ### Use Follow-Up Questions
+
 Splunky is conversational—engage in back-and-forth dialogue to refine answers and explore alternatives.
 
 ### Leverage the "Choose Your Own Adventure" Flow
@@ -152,11 +140,6 @@ While Splunky is highly knowledgeable, always validate:
 6. Splunky adjusts tone and adds business value emphasis
 
 ---
-
-
-
-
-
 <!-- ROADMAP -->
 ## Roadmap
 - Documentation for Self-Hosting
@@ -185,9 +168,6 @@ Find me on Slack to collaborate or contribute
 
 Distributed under the Apache 2.0 License
 ---
-
-
-
 
 <!-- CONTACT -->
 ## Contact
