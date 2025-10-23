@@ -1,0 +1,1311 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Splunky Chat AI Assistant</title>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #000002 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: #000002;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 1200px;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #e90777;
+    }
+
+    .header {
+        background: linear-gradient(135d, #10ace7 0%, #82ceed 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #000002;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .user-info {
+        font-size: 12px;
+        opacity: 0.9;
+    }
+
+    .help-button {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(233,7,119, 0.2);
+        border: 2px solid rgba(233,7,119, 0.5);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+    .help-button:hover {
+        background: rgba(255, 107, 129, 0.3);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Help Modal */
+    .help-modal {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        background: #000002;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        transition: right 0.4s ease-in-out;
+        overflow-y: auto;
+        border-left: 2px solid #3a3a5c;
+    }
+
+    .help-modal.active {
+        right: 0;
+    }
+
+    .help-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s;
+    }
+
+    .help-modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .help-modal-header {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #000002 100%);
+        color: white;
+        padding: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .help-modal-header h2 {
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .close-help {
+        background: rgba(233,7,119, 0.2);
+        border: 2px solid rgba(233,7,119, 0.5);
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+    .close-help:hover {
+        background: rgba(255, 107, 129, 0.3);
+        transform: translateY(-5%) scale(1.1);
+    }
+
+    .help-modal-content {
+        padding: 30px;
+        color: #e0e0e0;
+    }
+
+    .help-section {
+        margin-bottom: 30px;
+    }
+
+    .help-section h3 {
+        color: #10ace7;
+        font-size: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .help-section p {
+        line-height: 1.6;
+        color: #b0b0b0;
+        margin-bottom: 10px;
+    }
+
+    .help-section ul {
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    .help-section li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+        color: #b0b0b0;
+    }
+
+    .help-example {
+        background: #3a3a5c;
+        border-left: 4px solid #e90777;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .help-example-title {
+        color: #82ceed;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .help-example-text {
+        color: #e0e0e0;
+        font-style: italic;
+        line-height: 1.5;
+    }
+
+    .help-tip {
+        background: rgba(108, 92, 231, 0.1);
+        border: 1px solid #e90777;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 15px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .help-tip-icon {
+        color: #e90777;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .help-tip-text {
+        color: #b0b0b0;
+        line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+        background: #0f0f23;
+        color: #808080;
+        padding: 15px 20px;
+        text-align: center;
+        border-top: 2px solid #3a3a5c;
+        flex-shrink: 0;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .footer a {
+        color: #e90777;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    .footer-divider {
+        color: #e90777;
+        margin: 0 8px;
+    }
+
+/* Chat Containers */
+    .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 20px;
+        background: #1a1a3a;
+        min-height: 0;
+    }
+
+    .message {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.3s ease-in;
+        position: relative;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message.user {
+        align-items: flex-end;
+    }
+
+    .message.assistant {
+        align-items: flex-start;
+    }
+
+    .message-label {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        padding: 0 4px;
+    }
+
+    .message.user .message-label {
+        color: #82ceed;
+    }
+
+    .message.assistant .message-label {
+        color: #e90777;
+    }
+
+    .message-wrapper {
+        display: flex;
+        flex-direction: column;
+        max-width: 70%;
+    }
+
+    .message-content {
+        padding: 14px 18px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+     .message.user .message-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .message.assistant .message-content {
+        background: #2a2a3e;
+        color: #e0e0e0;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid #3a3a4e;
+    }
+
+    /* Message Buttons */
+    .message-buttons-top,
+    .message-buttons-bottom {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .message-buttons-top {
+        margin-bottom: 8px;
+    }
+
+    .message-buttons-bottom {
+        margin-top: 8px;
+    }
+
+    .message-button {
+        background: rgba(16, 172, 231, 0.2);
+        border: 1px solid rgba(16, 172, 231, 0.5);
+        color: #10ace7;
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .message-button:hover {
+        background: rgba(16, 172, 231, 0.3);
+        border-color: #10ace7;
+        transform: translateY(-1px);
+    }
+
+    .message-button:active {
+        transform: translateY(0);
+    }
+
+    /* Markdown Styling for Dark Mode */
+    .message-content h1,
+    .message-content h2,
+    .message-content h3,
+    .message-content h4,
+    .message-content h5,
+    .message-content h6 {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        line-height: 1.25;
+        color: #e90777;
+    }
+
+    .message-content h1 {
+        font-size: 1.8em;
+        border-bottom: 2px solid #3a3a4e;
+        padding-bottom: 8px;
+    }
+
+    .message-content h2 {
+        font-size: 1.5em;
+        border-bottom: 1px solid #3a3a4e;
+        padding-bottom: 6px;
+    }
+
+    .message-content h3 {
+        font-size: 1.25em;
+    }
+
+    .message-content p {
+        margin-bottom: 12px;
+        line-height: 1.6;
+        color: #e0e0e0;
+    }
+
+    .message-content ul,
+    .message-content ol {
+        margin-bottom: 12px;
+        margin-left: 20px;
+        line-height: 1.6;
+    }
+
+    .message-content li {
+        margin-bottom: 4px;
+        color: #e0e0e0;
+    }
+
+    .message-content code {
+        background: #1a1a24;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #ff79c6;
+        border: 1px solid #3a3a4e;
+    }
+
+    .message.user .message-content code {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+    }
+
+    .message-content pre {
+        background: #1a1a24;
+        padding: 14px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin-bottom: 12px;
+        border: 1px solid #3a3a4e;
+    }
+
+    .message-content pre code {
+        background: transparent;
+        padding: 0;
+        color: #f8f8f2;
+        display: block;
+        line-height: 1.5;
+        border: none;
+    }
+
+    .message-content blockquote {
+        border-left: 4px solid #667eea;
+        padding-left: 12px;
+        margin: 12px 0;
+        color: #b0b0b0;
+        font-style: italic;
+    }
+
+    .message-content a {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .message-content a:hover {
+        text-decoration: underline;
+        color: #8896ff;
+    }
+
+    .message.user .message-content a {
+        color: white;
+        text-decoration: underline;
+    }
+
+    .message-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 12px;
+        overflow-x: auto;
+        display: block;
+    }
+
+    .message-content table th,
+    .message-content table td {
+        border: 1px solid #3a3a4e;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .message-content table th {
+        background-color: #2a2a3e;
+        font-weight: 600;
+        color: #a0a0ff;
+    }
+
+    .message-content table td {
+        color: #e0e0e0;
+    }
+
+    .message-content hr {
+        border: none;
+        border-top: 2px solid #3a3a4e;
+        margin: 16px 0;
+    }
+
+    .message-content strong {
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .message-content em {
+        font-style: italic;
+        color: #d0d0d0;
+    }
+
+    .input-container {
+        padding: 20px;
+        background: #000000;
+        border-top: 2px solid #e90777;
+        flex-shrink: 0;
+    }
+
+    .input-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    #userInput {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #3a3a4e;
+        border-radius: 25px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.3s, background 0.3s;
+        background: #2a2a3e;
+        color: #e0e0e0;
+        resize: none;
+        min-height: 48px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.5;
+    }
+
+    #userInput:focus {
+        border-color: #e90777;
+        background: #323244;
+    }
+
+    #userInput::placeholder {
+        color: #6a6a7a;
+    }
+
+    button {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #10ace7 0%, #82ceed 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+        flex-shrink: 0;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .controls button {
+        flex: 1;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 10px;
+        color: #e90777;
+        flex-shrink: 0;
+    }
+
+    .loading.active {
+        display: block;
+    }
+
+    .typing-indicator {
+        display: inline-block;
+    }
+
+    .typing-indicator span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #667eea;
+        margin: 0 2px;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+        0%, 60%, 100% {
+            transform: translateY(0);
+        }
+        30% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .error-message {
+        background-color: #4a2c3a;
+        color: #ff6b81;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border-left: 4px solid #ff6b81;
+    }
+
+    /* Scrollbar styling */
+    .chat-container::-webkit-scrollbar,
+    .help-modal::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-track,
+    .help-modal::-webkit-scrollbar-track {
+        background: #1a1a3a;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb,
+    .help-modal::-webkit-scrollbar-thumb {
+        background: #4a4a6e;
+        border-radius: 5px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover,
+    .help-modal::-webkit-scrollbar-thumb:hover {
+        background: #5a5a8e;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 0;
+        }
+
+        .container {
+            height: 100vh;
+            max-height: 100vh;
+            border-radius: 0;
+        }
+
+        .message-wrapper {
+            max-width: 85%;
+        }
+
+        .help-modal {
+            max-width: 100%;
+        }
+
+        .help-button {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- Help Modal Overlay -->
+    <div class="help-modal-overlay" id="helpOverlay"></div>
+    
+    <!-- Help Modal -->
+    <div class="help-modal" id="helpModal">
+        <div class="help-modal-header">
+            <h2>💡 Help & Examples</h2>
+            <button class="close-help" onclick="closeHelp()">×</button>
+        </div>
+        <div class="help-modal-content">
+            <!-- CUSTOMIZE THIS SECTION WITH YOUR OWN CONTENT -->
+            <div class="help-section">
+                <h3>🚀 Getting Started</h3>
+                <p>Welcome to the Splunky Chat! This AI assistant is here to help you with various tasks. <br>
+                    Splunky will ask you questions and give you guidance.  <br>
+                    Simply type your question or request in the input box and press Enter or click Send.</p>
+            </div>
+            <div class="help-section">
+                <h3>📝 Example Prompts</h3>
+                <div class="help-example">
+                    <div class="help-example-title">Sales Situations:</div>
+                    <div class="help-example-text">"I have an upcoming meeting with (company name) and will be talking to a (role/position)."</div>
+                </div>
+                <div class="help-example">
+                    <div class="help-example-title">SPL Help:</div>
+                    <div class="help-example-text">"Write SPL that shows ..."</div>
+                </div>
+                <div class="help-example">
+                    <div class="help-example-title">Creative Writing:</div>
+                    <div class="help-example-text">"Write a short, but convincing email ..."</div>
+                </div>
+                <div class="help-example">
+                    <div class="help-example-title">Analysis:</div>
+                    <div class="help-example-text">"Tell me about the customer, (company name): [paste URL]"</div>
+                </div>
+            </div>
+            <div class="help-section">
+                <h3>💬 Tips for Better Results</h3>
+                <ul>
+                    <li><strong>Be specific:</strong> The more details you provide, the better the response</li>
+                    <li><strong>Ask follow-up questions:</strong> Continue the conversation to refine answers</li>
+                    <li><strong>Use examples:</strong> Show what you're looking for with examples</li>
+                    <li><strong>Request formats:</strong> Ask for bullet points, step-by-step guides, or specific formats</li>
+                </ul>
+            </div>
+            <div class="help-section">
+                <h3>🔧 Features</h3>
+                <ul>
+                    <li><strong>Markdown Support:</strong> Responses are formatted with headers, lists, code blocks, and more</li>
+                    <li><strong>Code Highlighting:</strong> Code snippets are automatically highlighted for readability</li>
+                    <li><strong>Export Chat:</strong> Download your conversation as a markdown file</li>
+                    <li><strong>Clear Chat:</strong> Start fresh with a clean conversation</li>
+                </ul>
+            </div>
+            <div class="help-tip">
+                <div class="help-tip-icon">💡</div>
+                <div class="help-tip-text">
+                    <strong>Pro Tip:</strong> You can press Enter to send messages quickly, or Shift+Enter to add a new line without sending.
+                </div>
+            </div>
+            <div class="help-section">
+                <h3>⚠️ Important Notes</h3>
+                <ul>
+                    <li>This AI assistant is powered by LM Studio running remotely</li>
+                    <li>Your conversations are logged for quality and improvement purposes</li>
+                    <li><strong>The AI may occasionally make mistakes - always verify important information</strong></li>
+                    <li>For sensitive topics (medical, legal), please consult qualified professionals</li>
+                </ul>
+            </div>
+            <!-- END OF CUSTOMIZABLE SECTION -->
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Splunky Chat AI Assistant for SE/SAs</h1>
+            <button class="help-button" onclick="openHelp()" title="Help & Examples">?</button>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-container" id="chatContainer">
+            <div class="message assistant">
+                <div class="message-label">Splunky</div>
+                <div class="message-wrapper">
+                    <div class="message-content">Hello! I'm ready to chat. How can I help you today?</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="typing-indicator"><span></span><span></span><span></span></div>
+        </div>
+        
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea id="userInput" placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)" rows="1"></textarea>
+                <button id="sendButton" onclick="sendMessage()">Send</button>
+            </div>
+            <div class="controls">
+                <button onclick="clearChat()">Clear Chat</button>
+                <button onclick="exportChat()">Export Chat</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <strong>Disclaimer:</strong> ⚠️This AI assistant is provided for informational purposes only. Do not rely on it for ANYTHING!⚠️<span class="footer-divider">|</span><strong>Privacy:</strong> Conversations are logged and may be used for improvement purposes.<span class="footer-divider">|</span><a href="#" onclick="openHelp(); return false;">Help</a><span class="footer-divider">|</span>© 2024 Your Company Name
+        </div>
+    </div>
+
+    <script>
+    // HARDCODED CONFIGURATION - Modify these values as needed
+    const HARDCODED_CONFIG = {
+        lmStudioUrl: 'http://splunklogs.com:1234',  // Change to your LM Studio IP and port
+        modelName: 'gpt-oss-120b',      // Change to your model name
+        systemPrompt: `You are Splunky, a knowledgeable and friendly AI assistant specifically designed to help Splunk Sales Engineers (SEs) and Solution Architects (SAs). Your primary role is to assist with:
+
+1. **Sales Situations & Customer Interactions:**
+   - Provide insights and talking points for customer meetings
+   - Help craft compelling value propositions
+   - Assist with technical questions that may arise during sales calls
+   - Offer competitive analysis and positioning strategies
+
+2. **SPL (Search Processing Language) Assistance:**
+   - Write, explain, and optimize SPL queries
+   - Help troubleshoot SPL issues
+   - Provide best practices for search efficiency
+   - Explain complex SPL concepts in simple terms
+
+3. **Technical Guidance:**
+   - Explain Splunk features, capabilities, and use cases
+   - Provide architecture recommendations
+   - Help with integration questions
+   - Offer solutions to common technical challenges
+
+4. **Communication & Documentation:**
+   - Draft emails, proposals, and technical documents
+   - Create executive summaries and business justifications
+   - Help structure presentations and demos
+   - Provide clear, professional communication templates
+
+5. **Industry Knowledge:**
+   - Offer insights on industry trends and use cases
+   - Provide relevant examples and case studies
+   - Help understand customer pain points by vertical
+   - Suggest relevant Splunk solutions for specific industries
+
+**Your Communication Style:**
+- Be professional yet approachable
+- Use clear, concise language
+- Provide actionable insights
+- When writing SPL or code, format it properly
+- Ask clarifying questions when needed
+- Admit when you're unsure and offer to explore alternatives
+
+**Important Guidelines:**
+- Always prioritize accuracy over speed
+- Pay close attention to the user's request.  Ask for clarification if you are not sure.
+- Provide context and reasoning for recommendations
+- Suggest multiple approaches when applicable
+- Be mindful of Splunk best practices and guidelines
+- Focus on solutions that benefit both the customer and Splunk
+
+**User Navigation Guidelines**
+- When asked about working with Sales Reps and/or customers, offer a "choose your own adventure" style step by step engagement.  
+Ask the SE for inputs to options you present to the user with pauses.  
+1. Ask if the SE is having a prep meeting with the Sales Team which includes the Sales Manager who is in charge of helping the customer succeed.  
+        If it is a prep meeting, help the SE understand whether the customer is a prospect or existing customer. 
+        Ask the SE if the meeting is about Cyber Security or Compliance, Operational effectiveness, Observability or other topics.
+        Help the SE and the Sales Manager by coming up with creating a compelling and convincing set of sales play steps for the initial meeting.  
+        Ask the SE for a link to the customer's website and analyze the website and provide a summary of what the customer or company does.
+2. Ask the SE whether who the customer's roles or personas are.
+3. List any potential compliance requirements the customer may have.
+4. Based on the customer's roles or personas, provide a list of simple, but effective bullet points about them.
+        Provide a list of 3 to 4 open ended questions in decending order of importance and effectiveness that the Sales Rep or the SE should ask the customer.
+        Provide nested follow up questions.  
+        The SE will enter in the custome's responses, answers or questions and you will provide effective and powerful responses that the SE will relay back to the customer.
+        You need to also address Splunk's competition. Ask the SE if there are any competitors the customer may be looking at.
+        Also provide laddered questions that the SE can ask the customer.  For example, if the customer is looking at a Splunk competitor, the followup laddered questions should have a NO answer from the customer.  Since we want the customer to buy Splunk, we want laddered questions where the customer answers YES.
+        Provide viable Splunk Solutions that map back to the customer's responses and requirements.
+5. Lastly, provide compelling and effective next steps or 'call to actions' for but the sales team and the customer, respectively to help secure another meeting with the customer based on the conversation between the SE and the customer.
+        
+
+Remember: You're here to make the SE/SA's job easier and more effective. Be helpful, knowledgeable, and supportive!`,  // Your hidden system prompt
+        loggingEndpoint: '/api/log'  // Nginx logging endpoint
+    };
+
+    let conversationHistory = [];
+    let isProcessing = false;
+    let chatStartTime = null;
+    let userHasScrolled = false;
+
+    // Configure marked.js options
+    marked.setOptions({
+        highlight: function(code, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(code, { language: lang }).value;
+                } catch (err) {}
+            }
+            return hljs.highlightAuto(code).value;
+        },
+        breaks: true,
+        gfm: true
+    });
+
+    // Help Modal Functions
+    function openHelp() {
+        const helpModal = document.getElementById('helpModal');
+        const helpOverlay = document.getElementById('helpOverlay');
+        
+        helpModal.classList.add('active');
+        helpOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeHelp() {
+        const helpModal = document.getElementById('helpModal');
+        const helpOverlay = document.getElementById('helpOverlay');
+        
+        helpModal.classList.remove('active');
+        helpOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close modal on overlay click
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'helpOverlay') {
+            closeHelp();
+        }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeHelp();
+        }
+    });
+
+    // Track user scrolling
+    const chatContainer = document.getElementById('chatContainer');
+    chatContainer.addEventListener('scroll', function() {
+        const isAtBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 50;
+        userHasScrolled = !isAtBottom;
+    });
+
+    function scrollToBottom() {
+        if (!userHasScrolled) {
+            requestAnimationFrame(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
+        }
+    }
+
+    function resetScroll() {
+        userHasScrolled = false;
+        scrollToBottom();
+    }
+
+    // Auto-resize textarea
+    const userInput = document.getElementById('userInput');
+    userInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        chatStartTime = new Date();
+        
+        // Focus on input
+        setTimeout(() => {
+            userInput.focus();
+        }, 100);
+    });
+
+    // Copy to clipboard function
+    function copyToClipboard(text, button) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '✅ Copied!';
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            button.innerHTML = '❌ Failed';
+            setTimeout(() => {
+                button.innerHTML = '📋 Copy';
+            }, 2000);
+        });
+    }
+
+    // Scroll to message top
+    function scrollToMessageTop(element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Scroll to message bottom
+    function scrollToMessageBottom(element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    async function sendMessage() {
+        if (isProcessing) return;
+
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        const messageStartTime = Date.now();
+
+        // Reset textarea height
+        userInput.style.height = 'auto';
+        userInput.value = '';
+        isProcessing = true;
+        document.getElementById('sendButton').disabled = true;
+        document.getElementById('loadingIndicator').classList.add('active');
+
+        // Add user message to chat
+        addMessageToChat('user', message);
+        conversationHistory.push({ role: 'user', content: message });
+        resetScroll();
+
+        try {
+            const response = await fetch(`${HARDCODED_CONFIG.lmStudioUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: HARDCODED_CONFIG.modelName,
+                    messages: [
+                        {
+                            role: 'system',
+                            content: HARDCODED_CONFIG.systemPrompt
+                        },
+                        ...conversationHistory
+                    ],
+                    temperature: 0.7,
+                    max_tokens: -1,
+                    stream: true
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            document.getElementById('loadingIndicator').classList.remove('active');
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let assistantMessage = '';
+            let messageElement = null;
+            let messageDiv = null;
+            let totalTokens = 0;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            const content = parsed.choices[0]?.delta?.content;
+
+                            if (content) {
+                                assistantMessage += content;
+                                
+                                if (!messageElement) {
+                                    const result = addMessageToChat('assistant', '', true);
+                                    messageElement = result.contentDiv;
+                                    messageDiv = result.messageDiv;
+                                }
+                                
+                                // Render markdown in real-time
+                                messageElement.innerHTML = marked.parse(assistantMessage);
+                                // Apply syntax highlighting to code blocks
+                                messageElement.querySelectorAll('pre code').forEach((block) => {
+                                    hljs.highlightElement(block);
+                                });
+                                
+                                scrollToBottom();
+                            }
+
+                            // Track tokens if available
+                            if (parsed.usage?.total_tokens) {
+                                totalTokens = parsed.usage.total_tokens;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing SSE data:', e);
+                        }
+                    }
+                }
+            }
+
+            if (assistantMessage) {
+                conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                
+                // Add message buttons after completion
+                if (messageDiv) {
+                    addMessageButtons(messageDiv, assistantMessage);
+                }
+                
+                // Calculate time taken
+                const timeTaken = ((Date.now() - messageStartTime) / 1000).toFixed(2);
+                
+                // Estimate tokens if not provided (rough estimate: ~4 chars per token)
+                if (totalTokens === 0) {
+                    totalTokens = Math.ceil((message.length + assistantMessage.length) / 4);
+                }
+
+                // Log the interaction
+                logInteraction(message, assistantMessage, totalTokens, timeTaken);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('loadingIndicator').classList.remove('active');
+            showError(`Failed to connect to LM Studio. Please ensure LM Studio is running at ${HARDCODED_CONFIG.lmStudioUrl} and CORS is enabled.`);
+        } finally {
+            isProcessing = false;
+            document.getElementById('sendButton').disabled = false;
+        }
+    }
+
+    async function logInteraction(userPrompt, chatOutput, tokensUsed, timeTaken) {
+        const logData = {
+            timestamp: new Date().toISOString(),
+            user: 'anonymous', // Changed from userEmail to anonymous
+            user_prompt: userPrompt,
+            chat_output: chatOutput,
+            tokens_used: tokensUsed,
+            time_taken: timeTaken
+        };
+
+        try {
+            await fetch(HARDCODED_CONFIG.loggingEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(logData)
+            });
+        } catch (error) {
+            console.error('Logging error:', error);
+            // Don't show error to user, just log it
+        }
+    }
+
+    function addMessageToChat(role, content, isMarkdown = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}`;
+
+        // Add label
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'message-label';
+        labelDiv.textContent = role === 'user' ? 'You' : 'Splunky';
+
+        // Create wrapper
+        const wrapperDiv = document.createElement('div');
+        wrapperDiv.className = 'message-wrapper';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        if (isMarkdown && role === 'assistant') {
+            contentDiv.innerHTML = marked.parse(content);
+        } else {
+            contentDiv.textContent = content;
+        }
+
+        messageDiv.appendChild(labelDiv);
+        wrapperDiv.appendChild(contentDiv);
+        messageDiv.appendChild(wrapperDiv);
+        chatContainer.appendChild(messageDiv);
+
+        scrollToBottom();
+        
+        return { messageDiv, contentDiv, wrapperDiv };
+    }
+
+    function addMessageButtons(messageDiv, content) {
+        const wrapperDiv = messageDiv.querySelector('.message-wrapper');
+        
+        // Top buttons
+        const topButtonsDiv = document.createElement('div');
+        topButtonsDiv.className = 'message-buttons-top';
+        
+        const copyTopBtn = document.createElement('button');
+        copyTopBtn.className = 'message-button';
+        copyTopBtn.innerHTML = '📋 Copy';
+        copyTopBtn.onclick = () => copyToClipboard(content, copyTopBtn);
+        
+        const bottomBtn = document.createElement('button');
+        bottomBtn.className = 'message-button';
+        bottomBtn.innerHTML = '⬇️ Bottom';
+        bottomBtn.onclick = () => scrollToMessageBottom(messageDiv);
+        
+        topButtonsDiv.appendChild(copyTopBtn);
+        topButtonsDiv.appendChild(bottomBtn);
+        
+        // Bottom buttons
+        const bottomButtonsDiv = document.createElement('div');
+        bottomButtonsDiv.className = 'message-buttons-bottom';
+        
+        const copyBottomBtn = document.createElement('button');
+        copyBottomBtn.className = 'message-button';
+        copyBottomBtn.innerHTML = '📋 Copy';
+        copyBottomBtn.onclick = () => copyToClipboard(content, copyBottomBtn);
+        
+        const topBtn = document.createElement('button');
+        topBtn.className = 'message-button';
+        topBtn.innerHTML = '⬆️ Top';
+        topBtn.onclick = () => scrollToMessageTop(messageDiv);
+        
+        bottomButtonsDiv.appendChild(copyBottomBtn);
+        bottomButtonsDiv.appendChild(topBtn);
+        
+        // Insert top buttons before content
+        wrapperDiv.insertBefore(topButtonsDiv, wrapperDiv.firstChild);
+        
+        // Append bottom buttons after content
+        wrapperDiv.appendChild(bottomButtonsDiv);
+    }
+
+    function clearChat() {
+        if (confirm('Are you sure you want to clear the chat history?')) {
+            conversationHistory = [];
+            chatContainer.innerHTML = `
+                <div class="message assistant">
+                    <div class="message-label">Splunky</div>
+                    <div class="message-wrapper">
+                        <div class="message-content">Hello! I'm ready to chat. How can I help you today?</div>
+                    </div>
+                </div>
+            `;
+            userHasScrolled = false;
+        }
+    }
+
+    function exportChat() {
+        if (conversationHistory.length === 0) {
+            alert('No conversation to export.');
+            return;
+        }
+
+        let markdown = '# Chat Export\n\n';
+        markdown += `**Date:** ${new Date().toLocaleString()}\n\n`;
+
+        conversationHistory.forEach((msg, index) => {
+            if (msg.role === 'user') {
+                markdown += `**You:** ${msg.content}\n\n`;
+            } else {
+                markdown += `**Splunky:** ${msg.content}\n\n`;
+            }
+        });
+
+        const blob = new Blob([markdown], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `chat-export-${new Date().getTime()}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        chatContainer.appendChild(errorDiv);
+        scrollToBottom();
+    }
+    </script>
+</body>
+</html>
