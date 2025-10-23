@@ -18,7 +18,7 @@ A powerful, single-file AI chat interface designed specifically for Splunk Sales
 
 ## About The Project
 
-![Splunky Chat Example][](./images/screenshot1.png)
+![Splunky Chat Example](./images/screenshot1.png)
 
 After 10 years of being a SE and now SA, I found it difficult to account for every customer situation and spending a lot of time researching the customer's organization, customer's profile in LinkedIn and working with various Sales Reps...
 
