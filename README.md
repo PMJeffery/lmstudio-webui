@@ -151,14 +151,14 @@ While Splunky is highly knowledgeable, always validate:
     - [ ] Integrate varioud MCP Servers    
 
 - MCP Services
-    - [x] Web link Analysis MCP
+    - [ ] Web link Analysis MCP
     - [ ] Web Search MCP (SearXNG)
     - [ ] Splunk MCP
 
 - Functioanal Features
 
 - [x]  Stop/Cancel Button
-- [ ]  Loading/Thinking Animation
+- [x]  Loading/Thinking Animation
 
 ---
 <!-- CONTRIBUTING -->
