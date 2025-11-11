@@ -145,10 +145,10 @@ While Splunky is highly knowledgeable, always validate:
 ---
 <!-- ROADMAP -->
 ## Roadmap
-- Documentation for Self-Hosting
-    - [ ] Setup LM Studio Server (headless)
-    - [ ] Setup LM Studio offline 
-    - [ ] Integrate varioud MCP Servers    
+- [Documentation for Self-Hosting](https://github.com/PMJeffery/lmstudio-webui/wiki/Splunky-Chat-Self-Hosting)
+    - [x] Setup LM Studio Server (headless)
+    - [x] Setup LM Studio offline 
+    - [ ] Integrate various MCP Servers    
 
 - MCP Services
     - [ ] Web link Analysis MCP
