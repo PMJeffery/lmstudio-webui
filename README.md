@@ -159,7 +159,7 @@ While Splunky is highly knowledgeable, always validate:
 
 - [x]  Stop/Cancel Button
 - [x]  Loading/Thinking Animation
-
+- [x]  Chat Modes
 ---
 <!-- CONTRIBUTING -->
 ## Contributing
