@@ -1656,65 +1656,73 @@ async function sendMessage() {
         return { messageDiv, contentDiv, wrapperDiv };
     }
 
-    function addMessageButtons(messageDiv, content, tokens, timeSeconds) {
-        const wrapperDiv = messageDiv.querySelector('.message-wrapper');
-        
-        // Top buttons
-        const topButtonsDiv = document.createElement('div');
-        topButtonsDiv.className = 'message-buttons-top';
-        
-        const copyTopBtn = document.createElement('button');
-        copyTopBtn.className = 'message-button';
-        copyTopBtn.innerHTML = '📋 Copy';
-        copyTopBtn.onclick = () => copyToClipboard(content, copyTopBtn);
-        
-        const bottomBtn = document.createElement('button');
-        bottomBtn.className = 'message-button';
-        bottomBtn.innerHTML = '⬇️ Bottom';
-        bottomBtn.onclick = () => scrollToMessageBottom(messageDiv);
-        
-        topButtonsDiv.appendChild(copyTopBtn);
-        topButtonsDiv.appendChild(bottomBtn);
-        
-        // Bottom buttons with stats
-        const bottomButtonsDiv = document.createElement('div');
-        bottomButtonsDiv.className = 'message-buttons-bottom';
-        
-        const copyBottomBtn = document.createElement('button');
-        copyBottomBtn.className = 'message-button';
-        copyBottomBtn.innerHTML = '📋 Copy';
-        copyBottomBtn.onclick = () => copyToClipboard(content, copyBottomBtn);
-        
-        const topBtn = document.createElement('button');
-        topBtn.className = 'message-button';
-        topBtn.innerHTML = '⬆️ Top';
-        topBtn.onclick = () => scrollToMessageTop(messageDiv);
-        
-        // Stats display
-        const statsDiv = document.createElement('div');
-        statsDiv.className = 'message-stats';
-        statsDiv.innerHTML = `
-            <span class="stat-item">
-                <span>🔢</span>
-                <span>${tokens.toLocaleString()} tokens</span>
-            </span>
-            <span class="stat-divider">•</span>
-            <span class="stat-item">
-                <span>⏱️</span>
-                <span>${timeSeconds}s</span>
-            </span>
-        `;
-        
-        bottomButtonsDiv.appendChild(copyBottomBtn);
-        bottomButtonsDiv.appendChild(topBtn);
-        bottomButtonsDiv.appendChild(statsDiv);
-        
-        // Insert top buttons before content
-        wrapperDiv.insertBefore(topButtonsDiv, wrapperDiv.firstChild);
-        
-        // Append bottom buttons after content
-        wrapperDiv.appendChild(bottomButtonsDiv);
-    }
+function addMessageButtons(messageDiv, content, tokens, timeSeconds) {
+    const wrapperDiv = messageDiv.querySelector('.message-wrapper');
+    
+    // Calculate tokens per second
+    const tokensPerSecond = timeSeconds > 0 ? (tokens / parseFloat(timeSeconds)).toFixed(1) : '0';
+    
+    // Top buttons
+    const topButtonsDiv = document.createElement('div');
+    topButtonsDiv.className = 'message-buttons-top';
+    
+    const copyTopBtn = document.createElement('button');
+    copyTopBtn.className = 'message-button';
+    copyTopBtn.innerHTML = '📋 Copy';
+    copyTopBtn.onclick = () => copyToClipboard(content, copyTopBtn);
+    
+    const bottomBtn = document.createElement('button');
+    bottomBtn.className = 'message-button';
+    bottomBtn.innerHTML = '⬇️ Bottom';
+    bottomBtn.onclick = () => scrollToMessageBottom(messageDiv);
+    
+    topButtonsDiv.appendChild(copyTopBtn);
+    topButtonsDiv.appendChild(bottomBtn);
+    
+    // Bottom buttons with stats
+    const bottomButtonsDiv = document.createElement('div');
+    bottomButtonsDiv.className = 'message-buttons-bottom';
+    
+    const copyBottomBtn = document.createElement('button');
+    copyBottomBtn.className = 'message-button';
+    copyBottomBtn.innerHTML = '📋 Copy';
+    copyBottomBtn.onclick = () => copyToClipboard(content, copyBottomBtn);
+    
+    const topBtn = document.createElement('button');
+    topBtn.className = 'message-button';
+    topBtn.innerHTML = '⬆️ Top';
+    topBtn.onclick = () => scrollToMessageTop(messageDiv);
+    
+    // Stats display with tokens per second
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'message-stats';
+    statsDiv.innerHTML = `
+        <span class="stat-item">
+            <span>🔢</span>
+            <span>${tokens.toLocaleString()} tokens</span>
+        </span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item">
+            <span>⏱️</span>
+            <span>${timeSeconds}s</span>
+        </span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item">
+            <span>⚡</span>
+            <span>${tokensPerSecond} t/s</span>
+        </span>
+    `;
+    
+    bottomButtonsDiv.appendChild(copyBottomBtn);
+    bottomButtonsDiv.appendChild(topBtn);
+    bottomButtonsDiv.appendChild(statsDiv);
+    
+    // Insert top buttons before content
+    wrapperDiv.insertBefore(topButtonsDiv, wrapperDiv.firstChild);
+    
+    // Append bottom buttons after content
+    wrapperDiv.appendChild(bottomButtonsDiv);
+}
 
     function clearChat() {
         if (confirm('Are you sure you want to clear the chat history?')) {
